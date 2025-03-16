@@ -39,20 +39,21 @@ from semantic_kernel.exceptions import (
     VectorStoreInitializationException,
     VectorStoreOperationException,
 )
-from semantic_kernel.utils.experimental_decorator import experimental_class
+from semantic_kernel.utils.feature_stage_decorator import experimental
 
 logger: logging.Logger = logging.getLogger(__name__)
 
+TKey = TypeVar("TKey", bound=str)
 TModel = TypeVar("TModel")
 
 
-@experimental_class
+@experimental
 class AzureAISearchCollection(
-    VectorSearchBase[str, TModel],
+    VectorSearchBase[TKey, TModel],
     VectorizableTextSearchMixin[TModel],
     VectorizedSearchMixin[TModel],
     VectorTextSearchMixin[TModel],
-    Generic[TModel],
+    Generic[TKey, TModel],
 ):
     """Azure AI Search collection implementation."""
 
@@ -161,7 +162,7 @@ class AzureAISearchCollection(
         self,
         records: Sequence[Any],
         **kwargs: Any,
-    ) -> Sequence[str]:
+    ) -> Sequence[TKey]:
         if not isinstance(records, list):
             records = list(records)
         results = await self.search_client.merge_or_upload_documents(documents=records, **kwargs)

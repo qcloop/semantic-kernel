@@ -1,19 +1,25 @@
 # Copyright (c) Microsoft. All rights reserved.
 
 
+import sys
 from abc import abstractmethod
 from collections.abc import Sequence
 from typing import Any
+
+if sys.version_info >= (3, 11):
+    from typing import Self  # pragma: no cover
+else:
+    from typing_extensions import Self  # pragma: no cover
 
 from pydantic import Field
 
 from semantic_kernel.data.record_definition.vector_store_model_definition import VectorStoreRecordDefinition
 from semantic_kernel.data.vector_storage.vector_store_record_collection import VectorStoreRecordCollection
 from semantic_kernel.kernel_pydantic import KernelBaseModel
-from semantic_kernel.utils.experimental_decorator import experimental_class
+from semantic_kernel.utils.feature_stage_decorator import experimental
 
 
-@experimental_class
+@experimental
 class VectorStore(KernelBaseModel):
     """Base class for vector stores."""
 
@@ -27,7 +33,7 @@ class VectorStore(KernelBaseModel):
         data_model_type: type[object],
         data_model_definition: VectorStoreRecordDefinition | None = None,
         **kwargs: Any,
-    ) -> VectorStoreRecordCollection:
+    ) -> "VectorStoreRecordCollection":
         """Get a vector record store."""
         ...  # pragma: no cover
 
@@ -36,7 +42,7 @@ class VectorStore(KernelBaseModel):
         """Get the names of all collections."""
         ...  # pragma: no cover
 
-    async def __aenter__(self) -> "VectorStore":
+    async def __aenter__(self) -> Self:
         """Enter the context manager."""
         return self
 

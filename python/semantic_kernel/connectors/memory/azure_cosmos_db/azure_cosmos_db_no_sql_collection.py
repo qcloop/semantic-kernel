@@ -3,7 +3,7 @@
 import asyncio
 import sys
 from collections.abc import Sequence
-from typing import Any, TypeVar
+from typing import Any, Generic, TypeVar
 
 if sys.version_info >= (3, 12):
     from typing import override  # pragma: no cover
@@ -42,18 +42,19 @@ from semantic_kernel.exceptions import (
     VectorStoreOperationException,
 )
 from semantic_kernel.kernel_types import OneOrMany
-from semantic_kernel.utils.experimental_decorator import experimental_class
+from semantic_kernel.utils.feature_stage_decorator import experimental
 
 TModel = TypeVar("TModel")
 TKey = TypeVar("TKey", str, AzureCosmosDBNoSQLCompositeKey)
 
 
-@experimental_class
+@experimental
 class AzureCosmosDBNoSQLCollection(
     AzureCosmosDBNoSQLBase,
     VectorSearchBase[TKey, TModel],
     VectorizedSearchMixin[TModel],
     VectorTextSearchMixin[TModel],
+    Generic[TKey, TModel],
 ):
     """An Azure Cosmos DB NoSQL collection stores documents in a Azure Cosmos DB NoSQL account."""
 

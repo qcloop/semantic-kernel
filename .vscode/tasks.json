@@ -211,6 +211,19 @@
       }
     },
     {
+      "label": "build (CopilotAgentPluginsDemoSample)",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/dotnet/samples/Demos/CopilotAgentPlugins/CopilotAgentPluginsDemoSample/CopilotAgentPluginsDemoSample.csproj"
+      ]
+    },
+    // ****************
+    // Samples (dotnet)
+    // ****************
+    // Kernel Syntax Examples
+    {
       "label": "build (Concepts)",
       "command": "dotnet",
       "type": "process",

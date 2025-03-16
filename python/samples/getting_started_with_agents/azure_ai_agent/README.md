@@ -38,13 +38,8 @@ Ensure that your Azure AI Agent resources are configured with at least a Basic o
 To begin, create the project client as follows:
 
 ```python
-ai_agent_settings = AzureAIAgentSettings.create()
-
 async with DefaultAzureCredential() as credential:
-    client = await AzureAIAgent.create_client(
-        connection_string=ai_agent_settings.project_connection_string.get_secret_value(),
-        credential=credential,
-    )
+    client = await AzureAIAgent.create_client(credential=credential)
 
     async with client:
         # Your operational code here
@@ -55,45 +50,22 @@ async with DefaultAzureCredential() as credential:
 The required imports for the `Azure AI Agent` include async libraries:
 
 ```python
-from azure.ai.projects.aio import AIProjectClient
 from azure.identity.aio import DefaultAzureCredential
 ```
 
 ### Initializing the Agent
 
-You can create an `AIProjectClient` using a connection string:
+You can pass in a connection string (shown above) to create the client:
 
 ```python
-async def main():
-    ai_agent_settings = AzureAIAgentSettings.create()
-
-    async with (
+async with (
         DefaultAzureCredential() as creds,
-        AIProjectClient.from_connection_string(
+        AzureAIAgent.create_client(
             credential=creds,
             conn_str=ai_agent_settings.project_connection_string.get_secret_value(),
         ) as client,
     ):
-    # code
-```
-
-Or by explicitly specifying the endpoint and credentials:
-
-```python
-async def main():
-    ai_agent_settings = AzureAIAgentSettings.create()
-
-    async with (
-        DefaultAzureCredential() as creds,
-        AIProjectClient(
-            credential=creds,
-            endpoint=ai_agent_settings.endpoint,
-            subscription_id=ai_agent_settings.subscription_id,
-            resource_group_name=ai_agent_settings.resource_group_name,
-            project_name=ai_agent_settings.project_name
-        ) as client,
-    ):
-    # code
+        # operational logic
 ```
 
 ### Creating an Agent Definition
@@ -120,6 +92,12 @@ agent = AzureAIAgent(
 ```
 
 Now, you can create a thread, add chat messages to the agent, and invoke it with given inputs and optional parameters.
+
+### Reusing an Agent Definition
+
+In certain scenarios, you may prefer to reuse an existing agent definition rather than creating a new one. This can be done by calling `await client.agents.get_agent(...)` instead of `await client.agents.create_agent(...)`. 
+
+For a practical example, refer to the [`step7_azure_ai_agent_retrieval`](./step7_azure_ai_agent_retrieval.py) sample.
 
 ## Requests and Rate Limits
 
